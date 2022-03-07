@@ -1,0 +1,81 @@
+import { call, takeEvery, put, take } from "redux-saga/effects";
+import { PayloadAction } from "@reduxjs/toolkit";
+import WebsocketChannel from "../../app/websocket";
+import { playNewGame, getNewMap, openSquare } from "./game-slice";
+
+export enum GameActions {
+  START_NEW_GAME = "START_NEW_GAME",
+  GET_NEW_MAP = "GET_NEW_MAP",
+  OPEN_SQUARE_X_Y = "OPEN_SQUARE_X_Y",
+  FAILED_COMMAND = "FAILED_COMMAND",
+}
+
+export type OpenSquareXY = {
+  x: number;
+  y: number;
+  message: string;
+};
+
+export function* StartNewGame(action: PayloadAction<number>): any {
+  try {
+    const newGameCommand = `new ${action.payload}`;
+    const wschannel = yield call(WebsocketChannel, newGameCommand);
+
+    while (true) {
+      const message = yield take(wschannel);
+      if (message === "new: OK") {
+        yield put(playNewGame(action.payload));
+        yield put({ type: GameActions.GET_NEW_MAP });
+      } else {
+        yield put({ type: GameActions.FAILED_COMMAND });
+      }
+    }
+  } catch (e) {
+    yield put({ type: GameActions.FAILED_COMMAND });
+  }
+}
+
+export function* GenerateNewMap(): any {
+  try {
+    const getNewMapCommand = `map`;
+    const wschannel = yield call(WebsocketChannel, getNewMapCommand);
+
+    while (true) {
+      const message: string = yield take(wschannel);
+      const result: string[] = message.split("map:");
+      if (result[1]?.trimStart() !== "Not started") {
+        yield put(getNewMap(result[1]));
+      } else {
+        yield put({ type: GameActions.FAILED_COMMAND });
+      }
+    }
+  } catch (e) {
+    yield put({ type: GameActions.FAILED_COMMAND });
+  }
+}
+
+export function* OpenSquareAction(action: PayloadAction<OpenSquareXY>): any {
+  try {
+    const openSquareCommand = `open ${action.payload?.x} ${action.payload?.y}`;
+    const wschannel = yield call(WebsocketChannel, openSquareCommand);
+
+    while (true) {
+      const message: string = yield take(wschannel);
+      //const result: string[] = message.split("open:");
+      if (message) {
+        yield put(openSquare(message));
+        yield put({ type: GameActions.GET_NEW_MAP });
+      } else {
+        yield put({ type: GameActions.FAILED_COMMAND });
+      }
+    }
+  } catch (e) {
+    yield put({ type: GameActions.FAILED_COMMAND });
+  }
+}
+
+export default function* rootSaga() {
+  yield takeEvery(GameActions.START_NEW_GAME, StartNewGame);
+  yield takeEvery(GameActions.GET_NEW_MAP, GenerateNewMap);
+  yield takeEvery(GameActions.OPEN_SQUARE_X_Y, OpenSquareAction);
+}
