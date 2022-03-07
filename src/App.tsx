@@ -44,9 +44,7 @@ function App() {
 
   //Start New Game
   useEffect(() => {
-    startNewGame(1);
-
-    const timer = setInterval(() => {
+   const timer = setInterval(() => {
       if (counter > 0) {
         dispatch(subtractCounter(1));
       }
@@ -55,7 +53,7 @@ function App() {
     return () => {
       clearInterval(timer);
     };
-  }, []);
+  }, [dispatch, counter]);
 
   //Recieve New Message
   useEffect(() => {
