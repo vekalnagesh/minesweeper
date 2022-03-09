@@ -1,6 +1,7 @@
-import React from "react";
+import React, { MouseEvent } from "react";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import Box from "@mui/material/Box";
+import TourIcon from "@mui/icons-material/Tour";
 
 export type SquareType = {
   type: SquareTypes;
@@ -12,11 +13,12 @@ export enum SquareTypes {
   DATA = "DATA",
   UNCHECKED = "UNCHECKED",
   MINED = "MINED",
+  FLAGGED = "FLAGGED",
 }
 
 interface SquaresProps {
   square: SquareType;
-  onPress?: () => void;
+  onPress?: (e: MouseEvent) => void;
 }
 
 const squareStyles = {
@@ -41,12 +43,18 @@ const squareStyles = {
     width: "25px",
     height: "25px",
   },
+  tourIcon: {
+    color: "red",
+    width: "15px",
+    height: "15px",
+  },
 };
 const SquareArea = ({ square, onPress, ...rest }: SquaresProps) => {
   return (
     <Box
       {...rest}
       onClick={onPress}
+      onContextMenu={onPress}
       sx={{
         ...squareStyles.container,
         backgroundColor:
@@ -54,11 +62,16 @@ const SquareArea = ({ square, onPress, ...rest }: SquaresProps) => {
       }}
     >
       {square.type === SquareTypes.MINED ? (
-        <LocalFireDepartmentIcon sx={{ ...squareStyles.icon }} />
+        <LocalFireDepartmentIcon sx={squareStyles.icon} />
       ) : (
         ""
       )}
-      <Box sx={{ ...squareStyles.dataContent }}>
+      {square.type === SquareTypes.FLAGGED ? (
+        <TourIcon sx={squareStyles.tourIcon} />
+      ) : (
+        ""
+      )}
+      <Box sx={squareStyles.dataContent}>
         &nbsp;
         {square.type === SquareTypes.DATA
           ? Number(square.data) === 0

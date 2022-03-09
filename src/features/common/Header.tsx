@@ -11,13 +11,15 @@ const Header = ({ title }: HeaderProps) => {
       variant="h3"
       align="center"
       sx={{
-        marginTop: 5,
-        marginBottom: 3,
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
         color: "#fff",
       }}
     >
       <LocalFireDepartmentIcon
-        sx={{ color: "red", width: "50px", height: "50px" }}
+        sx={{ color: "red", width: "50px", height: "40px" }}
       />{" "}
       {title}
     </Typography>

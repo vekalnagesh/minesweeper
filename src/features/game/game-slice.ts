@@ -11,7 +11,7 @@ const initialState: GameState = {
   level: 1,
   map: [],
   score: 0,
-  message: "",
+  message: "No Result",
 };
 
 const convertData = (data: string): string[] => {
@@ -25,6 +25,7 @@ const gameSlice = createSlice({
   reducers: {
     playNewGame(state, action: PayloadAction<number>) {
       state["level"] = action.payload;
+      state["message"] = "No Result";
     },
     getNewMap(state, action: PayloadAction<string>) {
       state["map"] = convertData(action.payload);

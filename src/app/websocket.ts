@@ -10,30 +10,6 @@ class Singleton {
   public static getInstance(): WebSocket {
     if (!Singleton.socket) {
       Singleton.socket = new WebSocket(WEB_SOCKET_URL);
-
-      // this.socket.onmessage = (ev: MessageEvent) => {
-
-      //     if(ev.returnValue) {
-      //         const data = ev.data;
-      //         console.log("onMessage", data);
-      //     } else {
-      //         console.log("is Else part");
-      //     }
-      // }
-
-      // this.socket.onopen = (ev: Event) => {
-      //     console.log("websocket is open");
-      //     this.socket.send('help');
-      // }
-
-      // this.socket.onerror = (ev: Event) => {
-      //     console.log(`websocket error is ${ev}`);
-      //     console.error(ev);
-      // }
-
-      // this.socket.onclose = (ev: CloseEvent) => {
-      //     console.log("websocket is closed");
-      // }
     }
     return Singleton.socket;
   }

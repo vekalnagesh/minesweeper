@@ -5,6 +5,8 @@ import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 
 interface AlertBoxProps {
   restartGame: () => void;
+  title: string;
+  content: string;
 }
 
 const style = {
@@ -60,7 +62,7 @@ const style = {
   },
 };
 
-const AlertBox = ({ restartGame }: AlertBoxProps) => {
+const AlertBox = ({ restartGame, title, content }: AlertBoxProps) => {
   return (
     <Box sx={style.alertContainer}>
       <Box sx={style.subContainer}>
@@ -70,10 +72,10 @@ const AlertBox = ({ restartGame }: AlertBoxProps) => {
           component="h2"
           sx={style.gradientHeader}
         >
-          You Loose the Game !!
+          {title}
         </Typography>
         <Typography sx={style.gradientSubtitle} id="modal-modal-description">
-          Wanna play again?
+          {content}
         </Typography>
         <ColorButton onClick={() => restartGame()}>New Game</ColorButton>
       </Box>
